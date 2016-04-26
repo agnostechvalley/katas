@@ -1,19 +1,21 @@
 # May 2016
 
 Join us on May __, 2016 to pair up with a fellow polyglot 
-and work on the Poker Kata from cyber-dojo. Attendees are 
-encouraged to use whatever language they wish in any
-development environment they wish.
+and work on the Poker Kata from [cyber-dojo](http://cyber-dojo.org/setup/show_exercises).
+Attendees are encouraged to use whatever language they wish
+in any development environment they wish.
 
-Once you've paired up, clone this repo and create your own
-directory under this month's directory so we can all view and
-comment on your code.
+Once you've paired up, fork this repo and create your own
+directory under this month's directory (using your name). 
+When you're finished with the exercise, make a pull request
+with your solution. This way we can all easily follow along
+and discuss via comments if necessary.
 
 For the sake of learning and best practices, we strongly
 encorage test-driven development and following the given 
 style guide for your chosen language.
 
-## Poker Kata
+## Poker Hands
 
 A poker deck contains 52 cards - each card has a suit which
 is one of clubs, diamonds, hearts, or spades 
