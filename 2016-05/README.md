@@ -1,7 +1,7 @@
 # May 2016
 
 Join us on May __, 2016 to pair up with a fellow polyglot 
-and work on the Poker Kata from [cyber-dojo](http://cyber-dojo.org/setup/show_exercises).
+and work on the Poker Hands exercise from [cyber-dojo](http://cyber-dojo.org/setup/show_exercises).
 Attendees are encouraged to use whatever language they wish
 in any development environment they wish.
 
