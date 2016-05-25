@@ -1,0 +1,33 @@
+{
+  "name": "five-card-showdown",
+  "version": "1.0.0",
+  "description": "Poker Hand Evaluator",
+  "author": "Cortlandt Winters",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "lab",
+    "test-cov-html": "lab -r html -o coverage.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cortrah/katas.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Cortrah/katas/issues"
+  },
+  "homepage": "https://github.com/Cortrah/katas#readme",
+  "keywords": [
+    "katas",
+    "poker",
+    "fun",
+    "agnosticvalley"
+  ],
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "devDependencies": {
+    "code": "^3.0.0",
+    "lab": "^10.7.0"
+  },
+  "license": "MIT"
+}
