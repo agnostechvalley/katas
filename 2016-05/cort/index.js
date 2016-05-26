@@ -150,7 +150,7 @@ var Deck = function (){
 
     this.drawCard = function(){
         return this.deck.pop();
-    }
+    };
     return this;
 };
 
@@ -286,7 +286,7 @@ var ranks = [
 
 // cards is null or an array of one or more cards
 var Hand = function (cards){
-    this.cards = cards || new Array();
+    this.cards = cards || [];
 
     this.pushCard = function(card){
         this.cards.push(card);
@@ -309,7 +309,6 @@ var Hand = function (cards){
 
     this.isStraight = function(){
         // check high and low ace
-
     };
 
     this.isFlush = function(){
@@ -364,7 +363,7 @@ var Player = function (name){
 // test for ties and subrankings,
 // the description should include enough information to explain the result
 var Table = function (tokens){
-    this.players = new Array();
+    this.players = [];
     while(tokens.length > 0){
         let t = tokens.shift();
         if(t.indexOf(':') != -1){
@@ -383,11 +382,15 @@ var Table = function (tokens){
             var c = new Card(f,s);
             this.players[this.players.length-1].hand.pushCard(c);
         }
-    };
-
+    }
     this.players.forEach(function(player, i, players){
         players[i].hand.sortCards();
     });
+
+    this.isTie = function(){
+      // ToDo: ties
+      return false;
+    };
 
     this.sortByRank = function (player1, player2) {
         if(player1.getRank() > player2.getRank()) {
@@ -395,7 +398,7 @@ var Table = function (tokens){
         } else if(player1.getRank() < player2.getRank()){
             return -1;
         }
-        // or else rank is a tie and we go to the subRank
+        // if we get here, rank is a tie and we go to the subRank
         if(player1.getSubRank() < player2.getSubRank()){
             return 1;
         } else if(player1.getSubRank() < player2.getSubRank()){
@@ -404,21 +407,15 @@ var Table = function (tokens){
             // then it really is a tie
             return 0;
         }
-    }
+    };
 
     this.showdownResults = function(){
         let results = "Tie";
-        let winner = null;
-        if( this.players[0].getRank() === this.players[1].getRank() ){
-            console.log("primary rank ties")
-            if(this.players[0].getSubRank() === this.players[1].getSubRank()){
-                console.log("sub rank ties");
-                //results = this.players[0].name + " wins - " + this.players[0].getRank().name + " - " + this.players[0].getRank().description
-            }
-        } else {
-
+        this.players.sort(this.sortByRank);
+        if(!this.isTie()){
+            let winner = this.players[0];
+            results = winner.name + " wins - " + winner.hand.getDetails();
         }
-
         return results;
     };
 
@@ -427,7 +424,9 @@ var Table = function (tokens){
 
 var parse = function (input){
     // trim and split input into tokens
-    // try/catch/error for valid input
+    // ToDo: try/catch/error for valid input
+    // ToDo: make sure all cards are cards
+    // ToDo: what rules to use for names? no names with spaces? That's not great. Could use some thought.
     var tokens = input.trim().replace(/\s+/g, ' ').split(' ');
 
     return tokens;
@@ -437,7 +436,6 @@ module.exports = function(input){
     var tokens = parse(input);
     var table = new Table(tokens);
     var results = table.showdownResults();
-    console.log(results)
     return results;
-}
+};
 
