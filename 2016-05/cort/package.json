@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Poker Hand Evaluator",
   "author": "Cortlandt Winters",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "lab",
     "test-cov-html": "lab -r html -o coverage.html"
