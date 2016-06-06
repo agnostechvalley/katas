@@ -2,20 +2,32 @@
 
 const Hand = require('./hand');
 
-module.exports = function (name){
-    this.name = name;
-    this.status = "IN"; // "IN" or "OUT"
-    this.hand = new Hand();
+module.exports = class Player {
 
-    this.getRank= function(){
+    construcor(name) {
+        this.name = name;
+        this.status = "IN";     // "IN" or "OUT"
+        this.hand = new Hand();
+    };
+
+    pushCard (card) {
+        this.hand.pushCard(card);
+        this.sortCards();
+    };
+
+    sortCards () {
+        this.hand.sortCards();
+    };
+
+    getRank () {
         return this.hand.getRank();
     };
 
-    this.getSubRank = function(){
-        return this.hand.getSubRank();
+    getHand () {
+        return this.hand;
     };
 
-    this.getDetails = function(){
-        return this.hand.getDetails();
+    showdown (otherPlayer) {
+        return this.hand.showdown(otherPlayer.getHand());
     };
 };
