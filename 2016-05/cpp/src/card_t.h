@@ -12,5 +12,9 @@ struct card_t {
     suit_t suit;
 
     card_t(const int value, const suit_t suit) : value(value), suit(suit) { }
+
+    static bool less_than_by_value(const card_t &c1, const card_t &c2) {
+        return c1.value < c2.value;
+    }
 };
 #endif //POKER_CARD_H
