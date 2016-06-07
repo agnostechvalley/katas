@@ -8,13 +8,27 @@ using namespace std;
 vector<string> tokenize(const string& str) {
     int start_idx = -1;
     int length = 0;
+    vector<string> result(12);
 
     for(uint i = 0; i < str.size(); ++i) {
         if(start_idx == -1) {
             if(str[i] != ' ') {
-                start_idx 
-
+                start_idx = i;
+                length = 1;
+            }
+        } else {
+            if(str[i] == ' ') {
+                result.push_back(str.substr(start_idx, length));
+                start_idx = -1;
+            } else if(i == str.size() - 1) {
+                ++length;
+                result.push_back(str.substr(start_idx, length));
+            } else {
+                ++length;
+            }
+        }
     }
+    return result;
 }
 
 int main() {
