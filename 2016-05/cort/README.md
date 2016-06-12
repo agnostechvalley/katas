@@ -18,5 +18,4 @@ then
 
 	npm test
 
-
-
+the key part of the kata is in lib/hand.js and test/hand.js

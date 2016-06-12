@@ -6,6 +6,7 @@
   "main": "lib/main.js",
   "scripts": {
     "test": "lab",
+    "test-ws": "node $NODE_DEBUG_OPTION ./node_modules/lab/bin/lab ./test",
     "test-cov-html": "lab -r html -o coverage.html"
   },
   "repository": {

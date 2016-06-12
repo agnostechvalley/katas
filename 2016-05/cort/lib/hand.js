@@ -3,244 +3,277 @@
 const Rank = require('./rank');
 const Card = require('./card');
 
-let ranks = [
-    // "High Card"
-    // up to five face values
-    new Rank("High Card", 1, 0,
-        function (hand){
-            return true;
-        },
-        function(hand){
-            return hand.toString();
-        }
-    ),
-
-    // "Pair"
-    // hasPair(hand)
-    // pairFace+14^2 + three face values
-    new Rank("Pair", 2, 0,
-        function (hand){
-            return hand.hasOnePair();
-        },
-        function(hand){
-            return hand.toString();
-        }
-    ),
-
-    // "Two Pair"
-    // hasTwoPair,
-    // highPairFace+14^2 + lowPairFace+14^2 + one face value
-    new Rank("Two Pair", 3, 0,
-        function (hand){
-            return hand.hasTwoPair();
-        },
-        function(hand){
-            return hand.toString();
-        }
-    ),
-
-    // "Three of a Kind"
-    // tripsFace+14^3 + two face values
-    new Rank("Three of a Kind", 4, 0,
-        function (hand){
-            return hand.hasTrips();
-        },
-        function(hand){
-            return hand.toString();
-        }
-    ),
-
-    // "Straight",
-    // each faceRank less than previous (or A4321),
-    // second high card facevalue (disregarding a possible low Ace)
-    new Rank("Straight", 5, 0,
-        function (hand){
-            return hand.isStraight();
-        },
-        function(hand){
-            return hand.toString();
-        }
-    ),
-
-    // "Flush",
-    // allOneSuit,
-    // five face values
-    new Rank("Flush", 6, 0,
-        function (hand){
-            return hand.isFlush();
-        },
-        function(hand){
-            return hand.toString();
-        }
-    ),
-
-    // "Four of a Kind",
-    // hasFourOfAKind,
-    // fourOfAKindFace
-    new Rank("Four of a Kind", 7, 0,
-        function (hand){
-            return hand.hasFourOfAKind();
-        },
-        function(hand){
-            return hand.toString();
-        }
-    ),
-
-    // "Full House",
-    // hasPair && hasTrips,
-    // secondaryRank tripsFace
-    new Rank("Full House", 8, 0,
-        function (hand){
-            return (hand.hasOnePair() && hand.hasTrips());
-        },
-        function(hand){
-            return hand.toString();
-        }
-    ),
-
-    // "Straight Flush"
-    // isStraight && isFlush,
-    // second high card facevalue (disregarding a possible low Ace)
-    new Rank("Straight Flush", 9, 0,
-        function (hand){
-            return (hand.isStraight() && hand.isFlush());
-        },
-        function(hand){
-            return hand.toString();
-        }
-    ),
-
-    // "Royal Flush"
-    // isStraight && isFlush & A & K
-    // five face values which will all be identical, so a tie
-    new Rank("Royal Flush", 10, 0,
-        function (hand){
-            // ToDo: fix this deep probing
-            return (hand.isStraight() &&
-                    hand.isFlush() &&
-                    (hand.cards[0].face.getCode() === "A") &&
-                    (hand.cards[1].face.getCode() === "K"));
-        },
-        function(hand){
-            return hand.toString();
-        }
-    )
-];
-
+// ====================================
+// Hand
+//
 // we can take a set of cards as input
 // in the form of '2C 3C 4C 8C AC'
 // or we can or push cards on one at a time
+// ====================================
 module.exports = class Hand {
 
     constructor (input) {
         this.cards = [];
-        if (typeof input === "string"){
+        if (typeof input === "string"){5
             let tokens = input.trim().replace(/\s+/g, ' ').split(' ');
             for(let i=0; i < tokens.length; i++){
                 this.cards.push(new Card(tokens[i]));
-            }
+            };
         };
+
+        // a rank has a name, rank, subRank, criteria and description
+        this.ranks = [
+            new Rank("royal flush", 10,
+                (hand) => {
+                    // all royal flushes have the same subrank value and are tied
+                    return 0;
+                },
+                (hand) => {
+                    // check that both A and K are there in case of a low Ace straight
+                    return (hand.isStraight() &&
+                            hand.isFlush() &&
+                            (hand.cards[0].getCode() === "A") &&
+                            (hand.cards[1].getCode() === "K"));
+                },
+                (hand) => {
+                    return `${this.name}:`
+                }
+            ),
+            new Rank("straight flush", 9,
+                (hand) => {
+                    // second high cards facevalue (also so we disregard a possible low Ace straight)
+                    return hand.cards[2].getValue();
+                },
+                (hand) => {
+                    return (hand.isStraight() && hand.isFlush());
+                },
+                (hand) => {
+                    let first = hand.card[0].getName();
+                    let second = hand.card[1].getName();
+                    if((first === "Ace")&&(second === "Five")){
+                        return `${this.name}: ${second} high`
+                    } else {
+                        return `${this.name}: ${first} high`
+                    }
+                }
+            ),
+            new Rank("four of a kind", 8,
+                (hand) => {
+                    //face +14^4 + kicker value
+                    let result = Math.pow(hand.card[0].getValue()+14, 4);
+                    result += hand.card[4].getValue();
+                    return result;
+                },
+                (hand) => {
+                    return hand.hasFourOfAKind();
+                },
+                (hand) => {
+                    // four fourOfAKindCardName 's
+                    return `${this.name}: four ${hand.card[0].getCode()}'s`
+                }
+            ),
+            new Rank("full house", 7,
+                (hand) => {
+                    //tripsFace+14^2 + pairFace
+                    return Math.pow(hand.cards[0].getValue()+14, 2) + hand.cards[3].getValue();
+                },
+                (hand) => {
+                    return (hand.hasHighPair() && hand.hasTrips());
+                },
+                (hand) => {
+                    // tripsFace over pairface
+                    return `${this.name}: ${hand.card[0].getCode()}'s over ${hand.card[3].getCode()}'s`
+                }
+            ),
+            new Rank("flush", 6,
+                (hand) => {
+                    // same as face rank
+                    let result = Math.pow(hand.cards[0].getValue()+14, 4);
+                    result += Math.pow(hand.cards[1].getValue()+14, 3);
+                    result += Math.pow(hand.cards[2].getValue()+14, 2);
+                    result += Math.pow(hand.cards[3].getValue()+14, 1);
+                    result += hand.cards[4].getValue();
+                    return result;
+                },
+                (hand) => {
+                    return hand.isFlush();
+                },
+                (hand) => {
+                    return `${this.name}:
+                    ${hand.cards[0].getCode()}
+                    ${hand.cards[1].getCode()}
+                    ${hand.cards[2].getCode()}
+                    ${hand.cards[3].getCode()}
+                    ${hand.cards[4].getCode()}`
+                }
+            ),
+            new Rank("straight", 5,
+                (hand) => {
+                    // second high cards facevalue (also so we disregard a possible low Ace straight)
+                    return hand.cards[2].getValue();
+                },
+                (hand) => {
+                    // each faceRank less than previous (or A5432),
+                    return hand.isStraight();
+                },
+                (hand) => {
+                    // second high card facevalue (disregarding a possible low Ace)
+                    (hand) => {
+                        let first = hand.card[0].getName();
+                        let second = hand.card[1].getName();
+                        if((first === "Ace")&&(second === "Five")){
+                            return `${this.name}: ${second} high`
+                        } else {
+                            return `${this.name}: ${first} high`
+                        }
+                    }
+                }
+            ),
+            new Rank("three of a kind", 4,
+                (hand) => {
+                    // face +14 ^3 face^i for i = 1, 0
+                    // include the kickers in case we add wildcards in the future
+                    // which would enable multiple trips of the same rank
+                    let result = Math.pow(hand.cards[0].getValue()+14, 3);
+                    result += Math.pow(hand.cards[3].getValue()+14,2);
+                    result += Math.pow(hand.cards[4].getValue());
+                    return result;
+                },
+                (hand) => {
+                    return hand.hasTrips();
+                },
+                (hand) => {
+                    // tripsFace+14^3 + two face values
+                    return `${this.name}: three ${hand.card[0].getCode()}'s, ${hand.cards[3].getCode()} ${hand.cards[4].getCode()} kickers`
+                }
+            ),
+            new Rank("two pair", 3,
+                (hand) => {
+                    //face +14 ^4 + face +14 ^4 + face
+                    let result = Math.pow(hand.cards[0].getValue()+14, 4);
+                    result += Math.pow(hand.cards[2].getValue()+14, 4);
+                    result += hand.cards[4].getValue();
+                    return result;
+                },
+                (hand) => {
+                    return hand.hasHighPair() && hand.hasLowPair();
+                },
+                (hand) => {
+                    // highPairFace+14^2 + lowPairFace+14^2 + one face value
+                    return `${this.name}: ${hand.card[0].getCode()}'s over ${hand.cards[2].getCode()}, ${hand.cards[4].getCode()} kicker`
+
+                }
+            ),
+            new Rank("pair", 2,
+                (hand) => {
+                    //face +14 ^4 + face^i for i = 2, 1, 0
+                    let result = Math.pow(hand.highPair.getValue()+14, 4);
+                    result += Math.pow(hand.cards[2].getValue()+14, 2);
+                    result += Math.pow(hand.cards[3].getValue()+14, 1);
+                    result += hand.cards[4].getValue();
+                    return result;
+                },
+                (hand) => {
+                    return hand.hasHighPair();
+                },
+                (hand) => {
+                    // pairFace+14^2 + three face values
+                    return `${this.name}: ${hand.card[0].getCode()}'s, ${hand.cards[2].getCode()} ${hand.cards[3].getCode()} ${hand.cards[4].getCode()} kickers`
+                }
+            ),
+            new Rank("high card", 1,
+                (hand) => {
+                    // face+14^i
+                    let result = Math.pow(hand.cards[0].getValue()+14, 4);
+                    result += Math.pow(hand.cards[1].getValue()+14, 3);
+                    result += Math.pow(hand.cards[2].getValue()+14, 2);
+                    result += Math.pow(hand.cards[3].getValue()+14, 1);
+                    result += hand.cards[4].getValue();
+                    return result;
+                },
+                (hand) => {
+                    //criteria: high card is always true
+                    return true;
+                },
+                (hand) => {
+                    // up to five face values
+                    return `${this.name}:
+                    ${hand.cards[0].getCode()}
+                    ${hand.cards[1].getCode()}
+                    ${hand.cards[2].getCode()}
+                    ${hand.cards[3].getCode()}
+                    ${hand.cards[4].getCode()}`
+                }
+            )
+        ]
     };
 
     pushCard (card) {
         this.cards.push(card);
     };
 
-    showdown (otherHand) {
-        let showdownResult = {
-            //winnerName or "Tie"
-            //primaryRank
-            //SubRank
-            //description
+    rankHand() {
+        // if it's already been ranked, no need to do it again.
+        if(this.rank === undefined){
+            // sort the cards
+            this.sortCards();
+
+            let numCards = this.cards.length;
+            // then give each card a pairRank
+            for ( let i = 0; i < numCards; i++){
+                let faceValue = this.cards[i].getValue();
+                let count = 0;
+                let j = i;
+                while( (j < numCards) && faceValue === this.cards[j].getValue() ) {
+                    count++;
+                    j++;
+                };
+                for (let k=i; k<j; k++){
+                    this.cards[k].setPairRank(count);
+                };
+                i=j;
+            };
+            // resort the cards by pairRank
+            this.sortCardsByPairRank();
+            // so 3 or four of a kind
+            // will be higher (to the left) of a pair
+            // this will make accessing the values easier
+            // and wont affect straights or flushes or faceRank
+
+            // for each rank in ranks
+            // pass this hand into the criteria function from highest to lowest
+            // and when we find a match we break out and return it
+            for(let i = 0; i< this.ranks.length; i++){
+                if(this.ranks[i].criteria(this.hand) === true){
+                    this.rank = this.ranks[i];
+                    break;
+                };
+            }
+        }
+    };
+
+    // true if there is either one or two pair
+    hasHighPair () {
+        const numPair = this.cards.filter(card => card.getPairRank() === 2).length
+        if( numPair >= 1){
+            return true;
+        } else {
+            return false;
         };
-
-        //if(this.isTie()) {
-        //    return "Tie";
-        //} else {
-        //    let winner = this.players[0];
-        //    return winner.name + " wins - " + winner.hand.getDetails();
-        //}
-        //return winner.getName + "" + rationale;
-        return "Tie";
     };
 
-    isTie () {
-        let p1rank = this.players[0].getRank();
-        let p1subRank = this.players[0].getRank();
-        let p2rank = this.players[1].getSubRank();
-        let p2subRank = this.players[1].getSubRank();
-        if(p1rank === p2rank && p1subRank === p2subRank){
+    // only true if there are two pair
+    // so there will be 4 cards total with pairRank of 2
+    hasLowPair () {
+        if(this.cards.filter(card => card.getPairRank() === 2).length === 4){
             return true;
         } else {
             return false;
-        }
-    };
-
-    getRank () {
-        // any pair = face +14 ^2
-        // any trips = face +14 ^3
-
-        // full house = trips + pair
-        // any four of a kind = face +14 ^4
-
-
-        // sort the cards and rank the hand by primary rank
-        // then give each card a pairRank and resort them by that
-        // where any sequence of identical cards
-        // gets a pairRank value
-        // of the sequence length.
-        // so 2 2's will each still be higher than an Ace
-        // and 9's over 3's with an Ace is greater than 9's over 3's with a King
-        // that way we can have a secondary rank that's just an array of face values
-        // where 2 A is for four twos and an ace
-        // and is greater than 13 12 11 for three Kings and Queen Jack Kicker
-        // note that 222 needs to be more than AA KK, otherwise it's easy modular math
-
-        // if isFlush && isStraight
-        //  if isStraightFlush
-        //      if isRoyalFlush
-
-        // sets pair, twoPair, trips, fours
-
-        // faces
-        return Math.random()*100;
-    };
-
-    getPairRanks() {
-        return [
-            { length:1, faceValue:12},
-            { length:2, faceValue:10},
-            { length:1, faceValue:4},
-            { length:1, faceValue:3}
-        ];
-    };
-
-    getSubRank () {
-        return Math.random()*100;
-    };
-
-    getDetails () {
-        return this.toString();
-    };
-
-    hasOnePair () {
-        if(this.getPairRanks.filter(rank => rank.length === 2).length === 1){
-            return true;
-        } else {
-            return false;
-        }
-    };
-
-    hasTwoPair () {
-        if(this.getPairRanks.filter(rank => rank.length === 2).length === 2){
-            return true;
-        } else {
-            return false;
-        }
+        };
     };
 
     hasTrips () {
-        if(this.getPairRanks.any(rank => rank.length === 3)){
+        if(this.cards.any(card => card.getPairRank() === 3)){
             return true;
         } else {
             return false;
@@ -248,7 +281,7 @@ module.exports = class Hand {
     };
 
     hasFourOfAKind () {
-        if(this.getPairRanks.any(rank => rank.length === 4)){
+        if(this.cards.any(card => card.getPairRank() === 4)){
             return true;
         } else {
             return false;
@@ -290,10 +323,10 @@ module.exports = class Hand {
 
     isFlush () {
         let result = false;
-        if (this.cards.every( card => card.suit.name === "Diamonds") ||
-            this.cards.every( card => card.suit.name === "Hearts") ||
-            this.cards.every( card => card.suit.name === "Spades") ||
-            this.cards.every( card => card.suit.name === "Clubs")) {
+        if (this.cards.every( card => card.suit.getName()=== "Diamonds") ||
+            this.cards.every( card => card.suit.getName() === "Hearts") ||
+            this.cards.every( card => card.suit.getName() === "Spades") ||
+            this.cards.every( card => card.suit.getName() === "Clubs")) {
             result = true;
         };
         return result;
@@ -303,6 +336,41 @@ module.exports = class Hand {
         this.cards.sort( (card1, card2) => {
             return (card2.getValue() - card1.getValue());
         });
+    };
+
+    sortCardsByPairRank () {
+        this.cards.sort( (card1, card2) => {
+            if(card1.getPairRank() > card2.getPairRank() ) {
+                return 1;
+            } else if(card1.getPairRank() < card2.getPairRank()){
+                return -1;
+            } else {
+                if(card1.getValue() > card2.getValue() ) {
+                    return 1;
+                } else if(card1.getValue() < card2.getValue()){
+                    return -1;
+                } else {
+                    // then it really is a tie
+                    return 0;
+                }
+            };
+        });
+    };
+
+    getRank () {
+        return this.rank;
+    };
+
+    getSubRank () {
+        return this.subRank;
+    };
+
+    getPairRanks() {
+        return this.pairRanks;
+    };
+
+    getDetails () {
+        return this.toString();
     };
 
     toString () {

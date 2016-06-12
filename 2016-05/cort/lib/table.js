@@ -24,8 +24,8 @@ module.exports = class Table {
         while( tokens.length > 0 ){
             let t = tokens.shift();
             if( t.indexOf(':') != -1 ){
-                // it's a new player
-                this.players.push( new Player(t.substr(0, t.indexOf(':'))));
+                let pName = t.substr(0, t.indexOf(':'));
+                this.players.push( new Player(pName));
             } else {
                 // push the card onto the hand of the current player
                 let c = new Card(t);
@@ -41,14 +41,39 @@ module.exports = class Table {
         } else if(player1.getRank() < player2.getRank()){
             return -1;
         } else {
-            // then it really is a tie
-            return 0;
+            if(player1.getSubRank() > player2.getSubRank() ) {
+                return 1;
+            } else if(player1.getSubRank() < player2.getSubRank()){
+                return -1;
+            } else {
+                // then it really is a tie
+                return 0;
+            }
         }
     };
 
-    showdownResults () {
+    areIn (player) {
+       return (player.status === "IN");
+    };
 
+    rankHand (player) {
+        player.rankHand();
+    };
+
+    showdownResults () {
+        let results = "Tie";
+        this.players.filter(this.areIn).forEach(this.rankHand);
         this.players.sort(this.sortByRank);
-        return this.players[0].showdown(this.players[1]);
+
+        if( (this.players[0].getRank()=== this.players[1].getRank()) &&
+            (this.players[0].getSubRank() === this.players[1].getSubRank())){
+            // 'Tie' is correct
+        } else {
+            //return this.players[0].getName() + " wins - " + this.players[0].showdown(this.players[1]);
+            let winningHand = this.players[0].getHand();
+            results = this.players[0].getName() + " wins - " + winningHand.rank.description(winningHand);
+        }
+        console.log(results);
+        return results;
     };
 };

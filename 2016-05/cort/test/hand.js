@@ -76,7 +76,20 @@ lab.test('it determines if a hand is a straight with a low end Ace', (done) => {
     done();
 });
 
-// determines if a hand is a royal flush
+// determines if a hand is a royal flush by using the ranking function
+// as opposed to the tests above that just test utility functions
+lab.test('it ranks a hand as a royal flush', (done) => {
+
+    const input = 'AC QC KC 10C JC';
+    let hand = new Hand(input);
+    hand.rankHand();
+    let rank = hand.getRank();
+
+    Assert( rank.name === "royal flush");
+    done();
+});
+
+
 // determines if a hand is a straight flush
 // determines if a hand is four of a kind
 // determines if a hand is a full house

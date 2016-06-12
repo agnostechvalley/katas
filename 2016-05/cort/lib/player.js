@@ -4,7 +4,7 @@ const Hand = require('./hand');
 
 module.exports = class Player {
 
-    construcor(name) {
+    constructor(name) {
         this.name = name;
         this.status = "IN";     // "IN" or "OUT"
         this.hand = new Hand();
@@ -19,8 +19,16 @@ module.exports = class Player {
         this.hand.sortCards();
     };
 
+    rankHand () {
+        return this.hand.rankHand();
+    };
+
     getRank () {
         return this.hand.getRank();
+    };
+
+    getSubRank () {
+        return this.hand.getSubRank();
     };
 
     getHand () {
