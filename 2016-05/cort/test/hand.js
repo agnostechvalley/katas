@@ -80,26 +80,76 @@ lab.test('it determines if a hand is a straight with a low end Ace', (done) => {
 // as opposed to the tests above that just test utility functions
 lab.test('it ranks a hand as a royal flush', (done) => {
 
-    const input = 'AC QC KC 10C JC';
-    let hand = new Hand(input);
+    let hand = new Hand('AC QC KC 10C JC');
     hand.rankHand();
-    let rank = hand.getRank();
-
-    Assert( rank.name === "royal flush");
+    Assert( hand.getRank().name === "royal flush");
     done();
 });
 
+lab.test('it ranks a hand as a straight flush', (done) => {
 
-// determines if a hand is a straight flush
-// determines if a hand is four of a kind
-// determines if a hand is a full house
+    let hand = new Hand('9C QC KC 10C JC');
+    hand.rankHand();
+    Assert( hand.getRank().name === "straight flush");
+    done();
+});
 
-// determines if a hand is a straight
-// determines if a hand is three of a kind
-// determines if a hand is two pair
-// determines if a hand is a pair
-// determines if a hand is high card
+//lab.test('it ranks a hand as four of a kind', (done) => {
+//
+//    let hand = new Hand('9C 9H 9D 9S JC');
+//    hand.rankHand();
+//    Assert( hand.getRank().name === "four of a kind");
+//    done();
+//});
 
+//lab.test('it ranks a hand as a full house', (done) => {
+//
+//    let hand = new Hand('JS KC KS JC JH');
+//    hand.rankHand();
+//    Assert( hand.getRank().name === "full house");
+//    done();
+//});
+//
+//// determines if a hand is a
+//lab.test('it ranks a hand as a straight', (done) => {
+//
+//    let hand = new Hand('9S QD KH 10C JC');
+//    hand.rankHand();
+//    Assert( hand.getRank().name === "straight");
+//    done();
+//});
+//
+//lab.test('it ranks a hand as three of a kind ', (done) => {
+//
+//    let hand = new Hand('9C 9H 9D 10C JC');
+//    hand.rankHand();
+//    Assert( hand.getRank().name === "three of a kind");
+//    done();
+//});
+//
+//lab.test('it ranks a hand as two pair', (done) => {
+//
+//    let hand = new Hand('9C 9H KC KH JC');
+//    hand.rankHand();
+//    Assert( hand.getRank().name === "");
+//    done();
+//});
+//
+//lab.test('it ranks a hand as a pair', (done) => {
+//
+//    let hand = new Hand('9C 9H KC AC JD');
+//    hand.rankHand();
+//    Assert( hand.getRank().name === "");
+//    done();
+//});
+//// determines if a hand is high card
+//lab.test('it ranks a hand as a high card', (done) => {
+//
+//    let hand = new Hand('9D QC KC 10C JC');
+//    hand.rankHand();
+//    Assert( hand.getRank().name === "high card");
+//    done();
+//});
 // compares two hands by face card rank
 // compares two straights by face card rank
 // compares two flushes by face card rank

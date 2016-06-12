@@ -14,7 +14,7 @@ module.exports = class Hand {
 
     constructor (input) {
         this.cards = [];
-        if (typeof input === "string"){5
+        if (typeof input === "string"){
             let tokens = input.trim().replace(/\s+/g, ' ').split(' ');
             for(let i=0; i < tokens.length; i++){
                 this.cards.push(new Card(tokens[i]));
@@ -31,9 +31,9 @@ module.exports = class Hand {
                 (hand) => {
                     // check that both A and K are there in case of a low Ace straight
                     return (hand.isStraight() &&
-                            hand.isFlush() &&
-                            (hand.cards[0].getCode() === "A") &&
-                            (hand.cards[1].getCode() === "K"));
+                    hand.isFlush() &&
+                    (hand.cards[0].getCode() === "A") &&
+                    (hand.cards[1].getCode() === "K"));
                 },
                 (hand) => {
                     return `${this.name}:`
@@ -205,7 +205,7 @@ module.exports = class Hand {
                     ${hand.cards[4].getCode()}`
                 }
             )
-        ]
+        ];
     };
 
     pushCard (card) {
@@ -244,7 +244,7 @@ module.exports = class Hand {
             // pass this hand into the criteria function from highest to lowest
             // and when we find a match we break out and return it
             for(let i = 0; i< this.ranks.length; i++){
-                if(this.ranks[i].criteria(this.hand) === true){
+                if(this.ranks[i].criteria(this) === true){
                     this.rank = this.ranks[i];
                     break;
                 };
