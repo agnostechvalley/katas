@@ -60,8 +60,8 @@ module.exports = class Hand {
             new Rank("four of a kind", 8,
                 (hand) => {
                     //face +14^4 + kicker value
-                    let result = Math.pow(hand.card[0].getValue()+14, 4);
-                    result += hand.card[4].getValue();
+                    let result = Math.pow(hand.cards[0].getValue()+14, 4);
+                    result += hand.cards[4].getValue();
                     return result;
                 },
                 (hand) => {
@@ -69,7 +69,7 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // four fourOfAKindCardName 's
-                    return `${this.name}: four ${hand.card[0].getCode()}'s`
+                    return `${this.name}: four ${hand.cards[0].getCode()}'s`
                 }
             ),
             new Rank("full house", 7,
@@ -82,7 +82,7 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // tripsFace over pairface
-                    return `${this.name}: ${hand.card[0].getCode()}'s over ${hand.card[3].getCode()}'s`
+                    return `${this.name}: ${hand.cards[0].getCode()}'s over ${hand.cards[3].getCode()}'s`
                 }
             ),
             new Rank("flush", 6,
@@ -231,7 +231,7 @@ module.exports = class Hand {
                 for (let k=i; k<j; k++){
                     this.cards[k].setPairRank(count);
                 };
-                i=j;
+                i=j-1
             };
             // resort the cards by pairRank
             this.sortCardsByPairRank();
@@ -273,7 +273,7 @@ module.exports = class Hand {
     };
 
     hasTrips () {
-        if(this.cards.any(card => card.getPairRank() === 3)){
+        if(this.cards.some(card => card.getPairRank() === 3)){
             return true;
         } else {
             return false;
@@ -281,7 +281,7 @@ module.exports = class Hand {
     };
 
     hasFourOfAKind () {
-        if(this.cards.any(card => card.getPairRank() === 4)){
+        if(this.cards.some(card => card.getPairRank() === 4)){
             return true;
         } else {
             return false;
@@ -340,20 +340,7 @@ module.exports = class Hand {
 
     sortCardsByPairRank () {
         this.cards.sort( (card1, card2) => {
-            if(card1.getPairRank() > card2.getPairRank() ) {
-                return 1;
-            } else if(card1.getPairRank() < card2.getPairRank()){
-                return -1;
-            } else {
-                if(card1.getValue() > card2.getValue() ) {
-                    return 1;
-                } else if(card1.getValue() < card2.getValue()){
-                    return -1;
-                } else {
-                    // then it really is a tie
-                    return 0;
-                }
-            };
+            return (card2.getPairRank() - card1.getPairRank());
         });
     };
 
