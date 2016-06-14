@@ -27,6 +27,10 @@ module.exports = class Player {
         return this.hand.getRank();
     };
 
+    getRankValue(){
+        return this.hand.getRankValue();
+    };
+
     getSubRank () {
         return this.hand.getSubRank();
     };

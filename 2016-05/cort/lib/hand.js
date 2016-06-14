@@ -329,7 +329,6 @@ module.exports = class Hand {
     };
 
     sortCardsByPairRank () {
-
         this.cards.sort( (card1, card2) => {
             if(card2.getPairRank() < card1.getPairRank() ) {
                 return -1;
@@ -349,8 +348,12 @@ module.exports = class Hand {
         });
     };
 
-    getRank () {
+    getRank() {
         return this.rank;
+    };
+
+    getRankValue () {
+        return this.rank.rank;
     };
 
     getSubRank () {

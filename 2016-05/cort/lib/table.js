@@ -38,10 +38,9 @@ module.exports = class Table {
     }
 
     sortByRank (player1, player2) {
-        // ToDo: clean this naming and property access up
-        if(player2.getRank().rank < player1.getRank().rank ) {
+        if(player2.getRankValue() < player1.getRankValue() ) {
             return -1;
-        } else if(player2.getRank().rank > player1.getRank().rank){
+        } else if(player2.getRankValue() > player1.getRankValue()){
             return 1;
         } else {
             if(player1.getSubRank() < player2.getSubRank() ) {
@@ -70,15 +69,14 @@ module.exports = class Table {
         // and sort them by their rankings
         this.players.sort(this.sortByRank);
 
-        if( (this.players[0].getRank().rank=== this.players[1].getRank().rank) &&
-            (this.players[0].getSubRank() === this.players[1].getSubRank())){
-            // it's a Tie
+        let winningPlayer = this.players[0];
+        let winningHand = winningPlayer.getHand();
+        let otherPlayer = this.players[1];
+        let otherHand = otherPlayer.getHand();
+        if( (winningPlayer.getRankValue()=== otherPlayer.getRankValue()) &&
+            (winningPlayer.getSubRank() === otherPlayer.getSubRank())){
             results = "Tie"
         } else {
-            let winningPlayer = this.players[0];
-            let winningHand = winningPlayer.getHand();
-            let otherPlayer = this.players[1];
-            let otherHand = otherPlayer.getHand();
             results =   winningPlayer.getName() + " wins - " + winningHand.getShowdownResults(otherHand);
         }
         return results;
