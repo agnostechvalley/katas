@@ -38,16 +38,16 @@ module.exports = class Table {
     }
 
     sortByRank (player1, player2) {
-
-        if(player1.getRank() > player2.getRank() ) {
+        // ToDo: clean this naming and property access up
+        if(player2.getRank().rank < player1.getRank().rank ) {
             return -1;
-        } else if(player1.getRank() < player2.getRank()){
+        } else if(player2.getRank().rank > player1.getRank().rank){
             return 1;
         } else {
-            if(player1.getSubRank() > player2.getSubRank() ) {
-                return -1;
-            } else if(player1.getSubRank() < player2.getSubRank()){
+            if(player1.getSubRank() < player2.getSubRank() ) {
                 return 1;
+            } else if(player1.getSubRank() > player2.getSubRank()){
+                return -1;
             } else {
                 // then it really is a tie
                 return 0;
@@ -70,7 +70,7 @@ module.exports = class Table {
         // and sort them by their rankings
         this.players.sort(this.sortByRank);
 
-        if( (this.players[0].getRank()=== this.players[1].getRank()) &&
+        if( (this.players[0].getRank().rank=== this.players[1].getRank().rank) &&
             (this.players[0].getSubRank() === this.players[1].getSubRank())){
             // it's a Tie
             results = "Tie"

@@ -14,7 +14,8 @@ lab.test('it ranks two hands by high card', (done) => {
     let input = "Black: 2H 3D 5S 9C KD White: 2C 3H 4S 8C AH";
     let output = "White wins - high card: Ace";
 
-    Assert( main.getShowdownResults(input) === output);
+    let results = main.getShowdownResults(input);
+    Assert( results  === output);
     done();
 });
 
@@ -24,52 +25,55 @@ lab.test('it detects a tie of flushes and sub ranks by high card', (done) => {
     let input = "Black: 2D 3D 5D 9D KD White: 2C 3C 4C 8C AC";
     let output = "White wins - flush: A 8 4 3 2";
 
-    Assert( main.getShowdownResults(input) === output);
+    let results = main.getShowdownResults(input);
+    Assert( results  === output);
     done();
 });
 
-//lab.test('it detects a full house and ranks it over a flush', (done) => {
-//
-//    let main =  new Main();
-//    let input = "Black: 2H 4S 4C 2D 4H White: 2S 8S AS QS 3S";
-//    let output = "Black wins - full house: 4's over 2's";
-//
-//    let results = main.getShowdownResults(input);
-//    console.log(results);
-//    Assert( results  === output);
-//    done();
-//});
+lab.test('it detects a full house and ranks it over a flush', (done) => {
 
-//lab.test('it detects a high card tie and subranks by the second highest card', (done) => {
-//
-//    let main =  new Main();
-//    let input = "Black: 2H 3D 5S 9C KD White: 2C 3H 4S 8C KH";
-//    let output = "Black wins - high card: Nine";
-//
-//    Assert( main.getShowdownResults(input) === output);
-//    done();
-//});
+    let main =  new Main();
+    let input = "Black: 2H 4S 4C 2D 4H White: 2S 8S AS QS 3S";
+    let output = "Black wins - full house: 4's over 2's";
 
-//lab.test('it detects a tie', (done) => {
-//
-//    let main =  new Main();
-//    let input = "Black: 2H 3D 5S 9C KD White: 2D 3H 5C 9S KH";
-//    let output = "Tie";
-//
-//    Assert( main.getShowdownResults(input) === output);
-//    done();
-//});
+    let results = main.getShowdownResults(input);
+    Assert( results  === output);
+    done();
+});
+
+lab.test('it detects a high card tie and subranks by the second highest card', (done) => {
+
+    let main =  new Main();
+    let input = "Black: 2H 3D 5S 9C KD White: 2C 3H 4S 8C KH";
+    let output = "Black wins - high card: King";
+
+    let results = main.getShowdownResults(input);
+    //console.log(results);
+    Assert( results  === output);
+    done();
+});
+
+lab.test('it detects a tie', (done) => {
+
+    let main =  new Main();
+    let input = "Black: 2H 3D 5S 9C KD White: 2D 3H 5C 9S KH";
+    let output = "Tie";
+
+    let results = main.getShowdownResults(input);
+    Assert( results  === output);
+    done();
+});
 
 // additional test cases,
-//lab.test('it trims whitespace of the first test', (done) => {
-//
-//    let main =  new Main();
-//    let input = "  Black:   2H 3D   5S 9C KD White: 2C 3H 4S 8C AH  ";
-//    let output = "White wins - high card: Ace";
-//
-//    Assert( main.getShowdownResults(input) === output);
-//    done();
-//});
+lab.test('it trims whitespace of the first test', (done) => {
+
+    let main =  new Main();
+    let input = "  Black:   2H 3D   5S 9C KD White: 2C 3H 4S 8C AH  ";
+    let output = "White wins - high card: Ace";
+
+    Assert( main.getShowdownResults(input) === output);
+    done();
+});
 
 // two token player names?, bad characters,
 // 10 as face value

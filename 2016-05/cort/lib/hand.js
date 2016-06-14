@@ -329,8 +329,23 @@ module.exports = class Hand {
     };
 
     sortCardsByPairRank () {
+
         this.cards.sort( (card1, card2) => {
-            return (card2.getPairRank() - card1.getPairRank());
+            if(card2.getPairRank() < card1.getPairRank() ) {
+                return -1;
+            } else if(card2.getPairRank() > card1.getPairRank()){
+                return 1;
+            } else {
+                // when tied continue to rank by regular value
+                if(card2.getValue() < card1.getValue() ) {
+                    return -1;
+                } else if(card2.getValue() > card1.getValue()){
+                    return 1;
+                } else {
+                    // then it really is a tie
+                    return 0;
+                }
+            }
         });
     };
 
