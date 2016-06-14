@@ -35,7 +35,7 @@ module.exports = class Player {
         return this.hand;
     };
 
-    showdown (otherPlayer) {
-        return this.hand.showdown(otherPlayer.getHand());
-    };
+    getName() {
+        return this.name;
+    }
 };

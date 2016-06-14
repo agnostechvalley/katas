@@ -36,7 +36,7 @@ module.exports = class Hand {
                     (hand.cards[1].getCode() === "K"));
                 },
                 (hand) => {
-                    return `${this.name}:`
+                    return ``
                 }
             ),
             new Rank("straight flush", 9,
@@ -51,9 +51,9 @@ module.exports = class Hand {
                     let first = hand.card[0].getName();
                     let second = hand.card[1].getName();
                     if((first === "Ace")&&(second === "Five")){
-                        return `${this.name}: ${second} high`
+                        return `${second} high`
                     } else {
-                        return `${this.name}: ${first} high`
+                        return `${first} high`
                     }
                 }
             ),
@@ -69,7 +69,7 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // four fourOfAKindCardName 's
-                    return `${this.name}: four ${hand.cards[0].getCode()}'s`
+                    return `four ${hand.cards[0].getCode()}'s`
                 }
             ),
             new Rank("full house", 7,
@@ -82,7 +82,7 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // tripsFace over pairface
-                    return `${this.name}: ${hand.cards[0].getCode()}'s over ${hand.cards[3].getCode()}'s`
+                    return `${hand.cards[0].getCode()}'s over ${hand.cards[3].getCode()}'s`
                 }
             ),
             new Rank("flush", 6,
@@ -99,12 +99,7 @@ module.exports = class Hand {
                     return hand.isFlush();
                 },
                 (hand) => {
-                    return `${this.name}:
-                    ${hand.cards[0].getCode()}
-                    ${hand.cards[1].getCode()}
-                    ${hand.cards[2].getCode()}
-                    ${hand.cards[3].getCode()}
-                    ${hand.cards[4].getCode()}`
+                    return `${hand.cards[0].getCode()} ${hand.cards[1].getCode()} ${hand.cards[2].getCode()} ${hand.cards[3].getCode()} ${hand.cards[4].getCode()}`
                 }
             ),
             new Rank("straight", 5,
@@ -122,9 +117,9 @@ module.exports = class Hand {
                         let first = hand.card[0].getName();
                         let second = hand.card[1].getName();
                         if((first === "Ace")&&(second === "Five")){
-                            return `${this.name}: ${second} high`
+                            return `${second} high`
                         } else {
-                            return `${this.name}: ${first} high`
+                            return `${first} high`
                         }
                     }
                 }
@@ -144,7 +139,7 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // tripsFace+14^3 + two face values
-                    return `${this.name}: three ${hand.card[0].getCode()}'s, ${hand.cards[3].getCode()} ${hand.cards[4].getCode()} kickers`
+                    return `three ${hand.card[0].getCode()}'s, ${hand.cards[3].getCode()} ${hand.cards[4].getCode()} kickers`
                 }
             ),
             new Rank("two pair", 3,
@@ -160,7 +155,7 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // highPairFace+14^2 + lowPairFace+14^2 + one face value
-                    return `${this.name}: ${hand.card[0].getCode()}'s over ${hand.cards[2].getCode()}, ${hand.cards[4].getCode()} kicker`
+                    return `${hand.card[0].getCode()}'s over ${hand.cards[2].getCode()}, ${hand.cards[4].getCode()} kicker`
 
                 }
             ),
@@ -178,7 +173,7 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // pairFace+14^2 + three face values
-                    return `${this.name}: ${hand.card[0].getCode()}'s, ${hand.cards[2].getCode()} ${hand.cards[3].getCode()} ${hand.cards[4].getCode()} kickers`
+                    return `${hand.card[0].getCode()}'s, ${hand.cards[2].getCode()} ${hand.cards[3].getCode()} ${hand.cards[4].getCode()} kickers`
                 }
             ),
             new Rank("high card", 1,
@@ -197,12 +192,7 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // up to five face values
-                    return `${this.name}:
-                    ${hand.cards[0].getCode()}
-                    ${hand.cards[1].getCode()}
-                    ${hand.cards[2].getCode()}
-                    ${hand.cards[3].getCode()}
-                    ${hand.cards[4].getCode()}`
+                    return `${hand.cards[0].getName()}`
                 }
             )
         ];
@@ -349,7 +339,7 @@ module.exports = class Hand {
     };
 
     getSubRank () {
-        return this.subRank;
+        return this.rank.subRank(this);
     };
 
     getPairRanks() {
@@ -358,6 +348,10 @@ module.exports = class Hand {
 
     getDetails () {
         return this.toString();
+    };
+
+    getShowdownResults(hand) {
+        return this.rank.name + ': ' + this.rank.description(this);
     };
 
     toString () {

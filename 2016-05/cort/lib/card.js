@@ -39,6 +39,14 @@ module.exports = class Card {
         return this.face.getName();
     };
 
+    getDescription () {
+        return this.face.getName() + ' of ' + this.suit.getName();
+    };
+
+    getSuit () {
+        return this.suit.getName();
+    };
+
     toString () {
         return this.face.getCode() + this.suit.getCode();
     };

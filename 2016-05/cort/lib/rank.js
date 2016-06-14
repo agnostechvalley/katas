@@ -19,6 +19,6 @@ module.exports = class Rank {
         this.rank = rank;
         this.subRank = subRank;
         this.criteria = criteria;
-        this.details = description
+        this.description = description;
     }
 };
