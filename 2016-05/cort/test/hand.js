@@ -32,7 +32,7 @@ lab.test('it sorts a hand by face value', (done) => {
 
     const input = '3C 2S 4C 8D AC';
     const output = 'AC 8D 4C 3C 2S';
-    const hand = new Hand(input);
+    let hand = new Hand(input);
 
     hand.sortCards();
 
@@ -43,9 +43,9 @@ lab.test('it sorts a hand by face value', (done) => {
 lab.test('it determines if a hand is a flush', (done) => {
 
     const input = '2C 3C 4C 8C AC';
-    const hand = new Hand(input);
+    let hand = new Hand(input);
 
-    Assert( hand.isFlush() == true);
+    Assert( hand.isFlush() === true);
     done();
 });
 
@@ -70,6 +70,15 @@ lab.test('it determines if a hand is a straight', (done) => {
 lab.test('it determines if a hand is a straight with a low end Ace', (done) => {
 
     const input = '3C 2C 4C AS 5C';
+    const hand = new Hand(input);
+
+    Assert( hand.isStraight() === true);
+    done();
+});
+
+lab.test('it determines if a hand is not a straight with a low end Ace', (done) => {
+
+    const input = '2C 2C 4C AS 5C';
     const hand = new Hand(input);
 
     Assert( hand.isStraight() === true);
@@ -150,11 +159,58 @@ lab.test('it ranks a hand as a high card', (done) => {
     done();
 });
 
-// compares two hands by face card rank
-// compares two straights by face card rank
-// compares two flushes by face card rank
-// compares two four of a kinds by fours rank
-// compares two full houses by trips pair rank
-// compares two trips by trip face rank
-// compares two two pair hands by high pair, low pair, kicker
-// compares two pair by pair rank, then by face card rank
+lab.test('it ranks a straight flush with an Ace as low', (done) => {
+
+    let hand = new Hand('5D AD 2D 3D 4D');
+    hand.rankHand();
+
+    let rank = hand.getRank();
+    Assert( rank.description(hand) === "straight flush: Five high");
+    done();
+});
+
+lab.test('it ranks a straight flush with an Ace as High as a royal flush', (done) => {
+
+    let hand = new Hand('KD AD JD QD 10D');
+    hand.rankHand();
+
+    let rank = hand.getRank();
+    Assert( rank.description(hand) === "royal flush");
+    done();
+});
+
+lab.test('it ranks and describes a full house', (done) => {
+
+    let hand = new Hand('KD KH KS QD QC');
+    hand.rankHand();
+
+    let rank = hand.getRank();
+    Assert( rank.description(hand) === "full house: King's over Queen's");
+    done();
+});
+
+lab.test('it can sort a hand by Pair rank and then by face value', (done) => {
+
+    const input = '3C 3S 4C 4D AC';
+    const output = '4C 4D 3C 3S AC';
+    let hand = new Hand(input);
+
+    // ToDo: it's confusing why this works but this.rankHand() doesn't
+    hand.rankHand2();
+    //console.log("");
+    //console.log(hand.toString());
+
+    Assert( hand.toString() === output);
+    done();
+});
+
+lab.test('it can sort a hand by face value with the same pairRank', (done) => {
+
+    const input = '7C 4C 3S 5D AC';
+    const output = 'AC 7C 5D 4C 3S';
+    let hand = new Hand(input);
+    hand.sortCardsByPairRank();
+
+    Assert( hand.toString() === output);
+    done();
+});

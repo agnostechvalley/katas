@@ -71,13 +71,13 @@ module.exports = class Table {
 
         let winningPlayer = this.players[0];
         let winningHand = winningPlayer.getHand();
-        let otherPlayer = this.players[1];
-        let otherHand = otherPlayer.getHand();
-        if( (winningPlayer.getRankValue()=== otherPlayer.getRankValue()) &&
-            (winningPlayer.getSubRank() === otherPlayer.getSubRank())){
+        let secondPlacePlayer = this.players[1];
+        let secondPlaceHand = secondPlacePlayer.getHand();
+        if( (winningPlayer.getRankValue()=== secondPlacePlayer.getRankValue()) &&
+            (winningPlayer.getSubRank() === secondPlacePlayer.getSubRank())){
             results = "Tie"
         } else {
-            results =   winningPlayer.getName() + " wins - " + winningHand.getShowdownResults(otherHand);
+            results =   winningPlayer.getName() + " wins - " + winningHand.getShowdownResults(secondPlaceHand);
         }
         return results;
     };

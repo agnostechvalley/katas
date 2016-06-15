@@ -9,6 +9,7 @@ const Card = require('./card');
 // we can take a set of cards as input
 // in the form of '2C 3C 4C 8C AC'
 // or we can or push cards on one at a time
+// call rankHand() before
 // ====================================
 module.exports = class Hand {
 
@@ -36,7 +37,7 @@ module.exports = class Hand {
                     (hand.cards[1].getCode() === "K"));
                 },
                 (hand) => {
-                    return ``
+                    return `${hand.getRank().name}`
                 }
             ),
             new Rank("straight flush", 9,
@@ -48,18 +49,19 @@ module.exports = class Hand {
                     return (hand.isStraight() && hand.isFlush());
                 },
                 (hand) => {
-                    let first = hand.card[0].getName();
-                    let second = hand.card[1].getName();
+                    let first = hand.cards[0].getName();
+                    let second = hand.cards[1].getName();
                     if((first === "Ace")&&(second === "Five")){
-                        return `${second} high`
+                        return `${hand.getRank().name}: ${second} high`
                     } else {
-                        return `${first} high`
+                        return `${hand.getRank().name}: ${first} high`
                     }
                 }
             ),
             new Rank("four of a kind", 8,
                 (hand) => {
                     //face +14^4 + kicker value
+                    hand.sortCardsByPairRank();
                     let result = Math.pow(hand.cards[0].getValue()+14, 4);
                     result += hand.cards[4].getValue();
                     return result;
@@ -69,12 +71,14 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // four fourOfAKindCardName 's
-                    return `four ${hand.cards[0].getCode()}'s`
+                    hand.sortCardsByPairRank();
+                    return `${hand.getRank().name}: four ${hand.cards[0].getName()}'s`
                 }
             ),
             new Rank("full house", 7,
                 (hand) => {
                     //tripsFace+14^2 + pairFace
+                    hand.sortCardsByPairRank();
                     return Math.pow(hand.cards[0].getValue()+14, 2) + hand.cards[3].getValue();
                 },
                 (hand) => {
@@ -82,7 +86,8 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // tripsFace over pairface
-                    return `${hand.cards[0].getCode()}'s over ${hand.cards[3].getCode()}'s`
+                    hand.sortCardsByPairRank();
+                    return `${hand.getRank().name}: ${hand.cards[0].getName()}'s over ${hand.cards[3].getName()}'s`
                 }
             ),
             new Rank("flush", 6,
@@ -99,13 +104,18 @@ module.exports = class Hand {
                     return hand.isFlush();
                 },
                 (hand) => {
-                    return `${hand.cards[0].getCode()} ${hand.cards[1].getCode()} ${hand.cards[2].getCode()} ${hand.cards[3].getCode()} ${hand.cards[4].getCode()}`
+                    return `${hand.getRank().name}: ${hand.cards[0].getCode()} ${hand.cards[1].getCode()} ${hand.cards[2].getCode()} ${hand.cards[3].getCode()} ${hand.cards[4].getCode()}`
                 }
             ),
             new Rank("straight", 5,
                 (hand) => {
                     // second high cards facevalue (also so we disregard a possible low Ace straight)
-                    return hand.cards[2].getValue();
+                    if((hand.cards[0].getCode() === "A") && (hand.cards[1].getCode() === "5")){
+                        // return the 5, rather than the ace
+                        return hand.cards[1].getValue();
+                    } else {
+                        return hand.cards[0].getValue();
+                    }
                 },
                 (hand) => {
                     // each faceRank less than previous (or A5432),
@@ -113,19 +123,13 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // second high card facevalue (disregarding a possible low Ace)
-                    (hand) => {
-                        let first = hand.card[0].getName();
-                        let second = hand.card[1].getName();
-                        if((first === "Ace")&&(second === "Five")){
-                            return `${second} high`
-                        } else {
-                            return `${first} high`
-                        }
-                    }
+                    let first = hand.cards[0].getName();
+                    return `${hand.getRank().name}: ${first} high`
                 }
             ),
             new Rank("three of a kind", 4,
                 (hand) => {
+                    hand.sortCardsByPairRank();
                     // face +14 ^3 face^i for i = 1, 0
                     // include the kickers in case we add wildcards in the future
                     // which would enable multiple trips of the same rank
@@ -138,13 +142,15 @@ module.exports = class Hand {
                     return hand.hasTrips();
                 },
                 (hand) => {
+                    hand.sortCardsByPairRank();
                     // tripsFace+14^3 + two face values
-                    return `three ${hand.card[0].getCode()}'s, ${hand.cards[3].getCode()} ${hand.cards[4].getCode()} kickers`
+                    return `${hand.getRank().name}: three ${hand.cards[0].getName()}'s, ${hand.cards[3].getCode()} ${hand.cards[4].getCode()} kickers`
                 }
             ),
             new Rank("two pair", 3,
                 (hand) => {
                     //face +14 ^4 + face +14 ^4 + face
+                    hand.sortCardsByPairRank();
                     let result = Math.pow(hand.cards[0].getValue()+14, 4);
                     result += Math.pow(hand.cards[2].getValue()+14, 4);
                     result += hand.cards[4].getValue();
@@ -155,14 +161,16 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // highPairFace+14^2 + lowPairFace+14^2 + one face value
-                    return `${hand.card[0].getCode()}'s over ${hand.cards[2].getCode()}, ${hand.cards[4].getCode()} kicker`
+                    hand.sortCardsByPairRank();
+                    return `${hand.getRank().name}: ${hand.cards[0].getName()}'s over ${hand.cards[2].getName()}'s, ${hand.cards[4].getCode()} kicker`
 
                 }
             ),
             new Rank("pair", 2,
                 (hand) => {
+                    hand.sortCardsByPairRank();
                     //face +14 ^4 + face^i for i = 2, 1, 0
-                    let result = Math.pow(hand.highPair.getValue()+14, 4);
+                    let result = Math.pow(hand.cards[0].getValue()+14, 4);
                     result += Math.pow(hand.cards[2].getValue()+14, 2);
                     result += Math.pow(hand.cards[3].getValue()+14, 1);
                     result += hand.cards[4].getValue();
@@ -173,7 +181,8 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // pairFace+14^2 + three face values
-                    return `${hand.card[0].getCode()}'s, ${hand.cards[2].getCode()} ${hand.cards[3].getCode()} ${hand.cards[4].getCode()} kickers`
+                    hand.sortCardsByPairRank();
+                    return `${hand.getRank().name}: two ${hand.cards[0].getName()}'s, ${hand.cards[2].getCode()} ${hand.cards[3].getCode()} ${hand.cards[4].getCode()} kickers`
                 }
             ),
             new Rank("high card", 1,
@@ -192,7 +201,7 @@ module.exports = class Hand {
                 },
                 (hand) => {
                     // up to five face values
-                    return `${hand.cards[0].getName()}`
+                    return `${hand.getRank().name}: ${hand.cards[0].getName()}`
                 }
             )
         ];
@@ -203,43 +212,71 @@ module.exports = class Hand {
     };
 
     rankHand() {
-        // if it's already been ranked, no need to do it again.
-        if(this.rank === undefined){
-            // sort the cards
-            this.sortCards();
+        // sort the cards
+        this.sortCards();
 
-            let numCards = this.cards.length;
-            // then give each card a pairRank
-            for ( let i = 0; i < numCards; i++){
-                let faceValue = this.cards[i].getValue();
-                let count = 0;
-                let j = i;
-                while( (j < numCards) && faceValue === this.cards[j].getValue() ) {
-                    count++;
-                    j++;
-                };
-                for (let k=i; k<j; k++){
-                    this.cards[k].setPairRank(count);
-                };
-                i=j-1
+        let numCards = this.cards.length;
+        // then give each card a pairRank
+        for ( let i = 0; i < numCards; i++){
+            let faceValue = this.cards[i].getValue();
+            let count = 0;
+            let j = i;
+            while( (j < numCards) && faceValue === this.cards[j].getValue() ) {
+                count++;
+                j++;
             };
-            // resort the cards by pairRank
-            this.sortCardsByPairRank();
-            // so 3 or four of a kind
-            // will be higher (to the left) of a pair
-            // this will make accessing the values easier
-            // and wont affect straights or flushes or faceRank
+            for (let k=i; k<j; k++){
+                this.cards[k].setPairRank(count);
+            };
+            i=j-1
+        };
+        // resort the cards by pairRank
+        this.sortCardsByPairRank();
+        // so 3 or four of a kind
+        // will be higher (to the left) of a pair
+        // even if the pair or a kicker has a higher face value
+        // this will make accessing the values easier
+        // and wont affect straights or flushes or faceRank
+        // as those cards will all have the same pairRank
 
-            // for each rank in ranks
-            // pass this hand into the criteria function from highest to lowest
-            // and when we find a match we break out and return it
-            for(let i = 0; i< this.ranks.length; i++){
-                if(this.ranks[i].criteria(this) === true){
-                    this.rank = this.ranks[i];
-                    break;
-                };
+        // for each rank in ranks
+        // pass this hand into the criteria function from highest to lowest
+        // and when we find a match we break out and return it
+        for (let r = 0; r < this.ranks.length; r++){
+            if(this.ranks[r].criteria(this) === true){
+                this.rank = this.ranks[r];
+                break;
             }
         }
+    };
+
+    rankHand2() {
+        // sort the cards
+        this.sortCards();
+
+        let numCards = this.cards.length;
+        // then give each card a pairRank
+        for ( let i = 0; i < numCards; i++){
+            let faceValue = this.cards[i].getValue();
+            let count = 0;
+            let j = i;
+            while( (j < numCards) && faceValue === this.cards[j].getValue() ) {
+                count++;
+                j++;
+            };
+            for (let k=i; k<j; k++){
+                this.cards[k].setPairRank(count);
+            };
+            i=j-1
+        };
+        // resort the cards by pairRank
+        this.sortCardsByPairRank();
+        // so 3 or four of a kind
+        // will be higher (to the left) of a pair
+        // even if the pair or a kicker has a higher face value
+        // this will make accessing the values easier
+        // and wont affect straights or flushes or faceRank
+        // as those cards will all have the same pairRank
     };
 
     // true if there is either one or two pair
@@ -276,10 +313,6 @@ module.exports = class Hand {
         } else {
             return false;
         }
-    };
-
-    hasFullHouse () {
-        return this.hasTrips() && this.hasOnePair();
     };
 
     isStraight () {
@@ -360,16 +393,8 @@ module.exports = class Hand {
         return this.rank.subRank(this);
     };
 
-    getPairRanks() {
-        return this.pairRanks;
-    };
-
-    getDetails () {
-        return this.toString();
-    };
-
     getShowdownResults(hand) {
-        return this.rank.name + ': ' + this.rank.description(this);
+        return this.rank.description(this);
     };
 
     toString () {
