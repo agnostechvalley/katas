@@ -15,6 +15,7 @@ module.exports = class Hand {
 
     constructor (input) {
         this.cards = [];
+
         if (typeof input === "string"){
             let tokens = input.trim().replace(/\s+/g, ' ').split(' ');
             for(let i=0; i < tokens.length; i++){
@@ -206,30 +207,45 @@ module.exports = class Hand {
                 }
             )
         ];
+
+        this.rankHand();
     };
 
     pushCard (card) {
         this.cards.push(card);
+        this.rankHand();
     };
 
     rankHand() {
-        this.sortAndPair();
+        // only rank the hand if there are 5 cards
+        if (this.cards.length === 5){
+            // sort the cards
+            this.sortByFaceValue();
 
-        // for each rank in ranks
-        // pass this hand into the criteria function from highest to lowest
-        // and when we find a match we break out and return it
-        for (let r = 0; r < this.ranks.length; r++){
-            if(this.ranks[r].criteria(this) === true){
-                this.rank = this.ranks[r];
-                break;
-            }
-        };
+            this.assignPairRanks();
+
+            // resort the cards by pairRank
+            this.sortByPairRank();
+
+            // for each rank in ranks
+            // pass this hand into the criteria function from highest to lowest
+            // and when we find a match we break out and return it
+            for (let r = 0; r < this.ranks.length; r++){
+                if(this.ranks[r].criteria(this) === true){
+                    this.rank = this.ranks[r];
+                    break;
+                }
+            };
+        }
     };
 
-    sortAndPair() {
-        // sort the cards
-        this.sortByFaceValue();
+    sortByFaceValue () {
+        this.cards.sort( (card1, card2) => {
+            return (card2.getValue() - card1.getValue());
+        });
+    };
 
+    assignPairRanks () {
         // then give each card a pairRank
         let numCards = this.cards.length;
         for ( let i = 0; i < numCards; i++){
@@ -245,14 +261,33 @@ module.exports = class Hand {
             };
             i=j-1
         };
-        // resort the cards by pairRank
-        this.sortByPairRank();
-        // so 3 or four of a kind
-        // will be higher (to the left) of a pair
-        // even if the pair or a kicker has a higher face value
-        // this will make accessing the values easier
-        // and wont affect straights or flushes or faceRank
-        // as those cards will all have the same pairRank
+    };
+
+    // Makes it so that 3 or four of a kind
+    // will be higher (to the left) of a pair
+    // even if the pair or a kicker has a higher face value
+    // this will make accessing the values easier
+    // and wont affect straights or flushes or faceRank
+    // as those cards will all have the same pairRank
+    sortByPairRank () {
+        this.cards.sort( (card1, card2) => {
+            if(card2.getPairRank() < card1.getPairRank() ) {
+                return -1;
+            } else if(card2.getPairRank() > card1.getPairRank()){
+                return 1;
+            } else {
+                // when tied continue to rank by regular value
+                if(card2.getValue() < card1.getValue() ) {
+                    return -1;
+                // we should never get here since we always sort by face value first
+                //} else if(card2.getValue() > card1.getValue()){
+                //    return 1;
+                } else {
+                    // then it really is a tie
+                    return 0;
+                }
+            }
+        });
     };
 
     // true if there is either one or two pair
@@ -329,32 +364,6 @@ module.exports = class Hand {
             result = true;
         };
         return result;
-    };
-
-    sortByFaceValue () {
-        this.cards.sort( (card1, card2) => {
-            return (card2.getValue() - card1.getValue());
-        });
-    };
-
-    sortByPairRank () {
-        this.cards.sort( (card1, card2) => {
-            if(card2.getPairRank() < card1.getPairRank() ) {
-                return -1;
-            } else if(card2.getPairRank() > card1.getPairRank()){
-                return 1;
-            } else {
-                // when tied continue to rank by regular value
-                if(card2.getValue() < card1.getValue() ) {
-                    return -1;
-                } else if(card2.getValue() > card1.getValue()){
-                    return 1;
-                } else {
-                    // then it really is a tie
-                    return 0;
-                }
-            }
-        });
     };
 
     getRank() {

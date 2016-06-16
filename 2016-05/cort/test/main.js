@@ -7,7 +7,6 @@ const Main = require('../lib/main.js');
 
 const lab = exports.lab = Lab.script();
 
-// These five were the first given test cases
 lab.test('it ranks two hands by high card, white wins', (done) => {
 
     let main =  new Main();
@@ -73,7 +72,7 @@ lab.test('it detects a high card tie and subranks by the second highest card', (
     done();
 });
 
-lab.test('it detects a tie', (done) => {
+lab.test('it detects a high card tie', (done) => {
 
     let main =  new Main();
     let input = "Black: 2H 3D 5S 9C 7D White: 2D 3H 5C 9S 7H";
@@ -85,7 +84,7 @@ lab.test('it detects a tie', (done) => {
 });
 
 // additional test cases,
-lab.test('it trims whitespace of the first test', (done) => {
+lab.test('it trims whitespace of the input', (done) => {
 
     let main =  new Main();
     let input = "  Black:   2H 3D   5S 9C KD White: 2C 3H 4S 8C AH  ";
@@ -183,7 +182,6 @@ lab.test('it compares 2 single pair by subrank', (done) => {
     let output = "Black wins - pair: two Seven's, 8 5 4 kickers";
 
     let results = main.getShowdownResults(input);
-    //console.log(results);
     Assert( results === output);
     done();
 });

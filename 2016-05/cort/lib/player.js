@@ -12,11 +12,6 @@ module.exports = class Player {
 
     pushCard (card) {
         this.hand.pushCard(card);
-        this.sortCards();
-    };
-
-    sortCards () {
-        this.hand.sortByFaceValue();
     };
 
     rankHand () {
