@@ -16,7 +16,7 @@ module.exports = class Player {
     };
 
     sortCards () {
-        this.hand.sortCards();
+        this.hand.sortByFaceValue();
     };
 
     rankHand () {
