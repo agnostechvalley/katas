@@ -107,23 +107,23 @@ int hand_t::compare(const hand_t &other) const {
         return -1;
     } else {
         switch(rank_) {
-            case rank_straight_flush: 
-            case rank_straight:
+            case rank_t::straight_flush: 
+            case rank_t::straight:
                 return get_high_card().value - other.get_high_card().value;
                 break;
-            case rank_flush:
-            case rank_high_card:
+            case rank_t::flush:
+            case rank_t::high_card:
                 return compare_highest_cards(other);
                 break;
-            case rank_four_of_a_kind:
+            case rank_t::four_of_a_kind:
                 return four_of_a_kinds_.front() - other.four_of_a_kinds_.front();
                 break;
-            case rank_full_house:
-            case rank_three_of_a_kind:
+            case rank_t::full_house:
+            case rank_t::three_of_a_kind:
                 return three_of_a_kinds_.front() - other.three_of_a_kinds_.front();
                 break;
-            case rank_two_pair:
-            case rank_pair:
+            case rank_t::two_pair:
+            case rank_t::pair:
                 return compare_highest_cards(other);
                 break;
         }
@@ -147,23 +147,23 @@ hand_t::rank_t hand_t::determine_rank() const {
     bool is_straight = find_if_straight();
     bool is_flush = find_if_flush();
     if(is_straight && is_flush) {
-        rank = rank_straight_flush;
+        rank = rank_t::straight_flush;
     } else if(four_of_a_kinds_.size() == 1) {
-        rank = rank_four_of_a_kind;
+        rank = rank_t::four_of_a_kind;
     } else if(three_of_a_kinds_.size() == 1 && two_of_a_kinds_.size() == 1) {
-        rank = rank_full_house;
+        rank = rank_t::full_house;
     } else if(is_flush) {
-        rank = rank_flush;
+        rank = rank_t::flush;
     } else if(is_straight) {
-        rank = rank_straight;
+        rank = rank_t::straight;
     } else if(three_of_a_kinds_.size() == 1) {
-        rank = rank_three_of_a_kind;
+        rank = rank_t::three_of_a_kind;
     } else if(two_of_a_kinds_.size() == 2) {
-        rank = rank_two_pair;
+        rank = rank_t::two_pair;
     } else if(two_of_a_kinds_.size() == 1) {
-        rank = rank_pair;
+        rank = rank_t::pair;
     } else {
-        rank = rank_high_card;
+        rank = rank_t::high_card;
     }
     return rank;
 }

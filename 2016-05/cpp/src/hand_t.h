@@ -21,8 +21,9 @@ public:
     const std::vector<card_t> &get_cards() const;
     const card_t& get_high_card() const;
 
-    enum rank_t { rank_high_card, rank_pair, rank_two_pair, rank_three_of_a_kind, rank_straight, rank_flush,
-        rank_full_house, rank_four_of_a_kind, rank_straight_flush };
+    enum class rank_t { high_card, pair, two_pair, three_of_a_kind, straight, flush, full_house, four_of_a_kind, 
+        straight_flush };
+
 private:
     std::vector<card_t> cards_;
     std::vector<int> four_of_a_kinds_;
