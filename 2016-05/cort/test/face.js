@@ -8,8 +8,8 @@ const lab = exports.lab = Lab.script();
 
 lab.test('it creates a Face with a name and a value from a code', (done) => {
 
-    const input = "2";
-    const outputName = "Two";
+    const input = '2';
+    const outputName = 'Two';
     const outputValue = 2;
 
     const f = new Face(input);

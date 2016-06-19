@@ -6,30 +6,33 @@ module.exports = class Suit {
 
         this.code = code;
         switch (code) {
-            case("H"):{
-                this.name = "Hearts";
+            case ('H'):{
+                this.name = 'Hearts';
                 break;
             }
-            case("D"):{
-                this.name = "Diamonds";
+            case ('D'):{
+                this.name = 'Diamonds';
                 break;
             }
-            case("C"):{
-                this.name = "Clubs";
+            case ('C'):{
+                this.name = 'Clubs';
                 break;
             }
-            case("S"):{
-                this.name = "Spades";
+            case ('S'):{
+                this.name = 'Spades';
                 break;
             }
         };
     };
 
-    getCode () {
+    getCode() {
+
         return this.code;
     };
 
-    getName () {
+    getName() {
+
         return this.name;
     };
 };
+

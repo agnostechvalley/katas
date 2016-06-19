@@ -5,32 +5,41 @@ const Hand = require('./hand');
 module.exports = class Player {
 
     constructor(name) {
+
         this.name = name;
-        this.status = "IN";     // "IN" or "OUT"
+        this.status = 'IN';     // "IN" or "OUT"
         this.hand = new Hand();
     };
 
-    pushCard (card) {
+    pushCard(card) {
+
         this.hand.pushCard(card);
     };
 
-    rankHand () {
+    rankHand() {
+
         return this.hand.rankHand();
     };
 
-    getRankValue(){
+    getRankValue() {
+
         return this.hand.getRankValue();
     };
 
-    getSubRank () {
+    getSubRank() {
+
         return this.hand.getSubRank();
     };
 
-    getHand () {
+    getHand() {
+
         return this.hand;
     };
 
     getName() {
+
         return this.name;
     }
 };
+
+

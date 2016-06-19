@@ -7,7 +7,8 @@ const Table = require('./table');
 // ====================================================================
 module.exports =  class Main {
 
-    constructor (config){
+    constructor(config){
+
         this.config = config;
         this.table = new Table();
     };
@@ -17,8 +18,9 @@ module.exports =  class Main {
     getShowdownResults(input){
 
         this.table.setTable(input);
-        let results = this.table.showdownResults();
+        const results = this.table.showdownResults();
 
         return results;
     }
 };
+

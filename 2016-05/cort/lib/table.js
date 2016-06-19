@@ -5,7 +5,8 @@ const Player = require('./player');
 
 module.exports = class Table {
 
-    constructor () {
+    constructor() {
+
         this.players = [];
     };
 
@@ -13,6 +14,7 @@ module.exports = class Table {
     // any number of players and cards can be input
     // but we only evaluate the showdown for two players with 5 cards for now
     setTable(tableDescription){
+
         // trim and split input into tokens
         // ToDo: try/catch/error for valid input
         // ToDo: make sure all cards are valid cards
@@ -24,61 +26,75 @@ module.exports = class Table {
         const tokens = tableDescription.trim().replace(/\s+/g, ' ').split(' ');
 
         this.players = [];
-        while( tokens.length > 0 ){
-            let t = tokens.shift();
-            if( t.indexOf(':') != -1 ){
-                let pName = t.substr(0, t.indexOf(':'));
+        while (tokens.length > 0){
+            const t = tokens.shift();
+            if (t.indexOf(':') !== -1 ){
+                const pName = t.substr(0, t.indexOf(':'));
                 this.players.push( new Player(pName));
-            } else {
+            }
+            else {
                 // push the card onto the hand of the current player
-                let c = new Card(t);
-                this.players[this.players.length-1].pushCard(c);
+                const c = new Card(t);
+                this.players[this.players.length - 1].pushCard(c);
             }
         };
     }
 
-    sortByRank (player1, player2) {
-        if(player2.getRankValue() < player1.getRankValue() ) {
-            return -1;
-        } else if(player2.getRankValue() > player1.getRankValue()){
-            return 1;
-        } else {
-            if(player1.getSubRank() < player2.getSubRank() ) {
-                return 1;
-            } else if(player1.getSubRank() > player2.getSubRank()){
-                return -1;
-            } else {
+    sortByRank(player1, player2) {
+
+        let result = 0;
+
+        if (player2.getRankValue() < player1.getRankValue() ) {
+            result = -1;
+        }
+        else if (player2.getRankValue() > player1.getRankValue()){
+            result = 1;
+        }
+        else {
+            if (player1.getSubRank() < player2.getSubRank() ) {
+                result = 1;
+            }
+            else if (player1.getSubRank() > player2.getSubRank()){
+                result = -1;
+            }
+            else {
                 // then it really is a tie
-                return 0;
+                result = 0;
             }
         }
+        return result;
     };
 
-    areIn (player) {
-       return (player.status === "IN");
+    areIn(player) {
+
+        return (player.status === 'IN');
     };
 
-    rankHand (player) {
+    rankHand(player) {
+
         player.rankHand();
     };
 
-    showdownResults () {
-        let results = "";
+    showdownResults() {
+
+        let results = '';
         // rank any of the hands that are still "IN"
         this.players.filter(this.areIn).forEach(this.rankHand);
         // and sort them by their rankings
         this.players.sort(this.sortByRank);
 
-        let winningPlayer = this.players[0];
-        let winningHand = winningPlayer.getHand();
-        let secondPlacePlayer = this.players[1];
-        let secondPlaceHand = secondPlacePlayer.getHand();
-        if( (winningPlayer.getRankValue()=== secondPlacePlayer.getRankValue()) &&
+        const winningPlayer = this.players[0];
+        const winningHand = winningPlayer.getHand();
+        const secondPlacePlayer = this.players[1];
+        const secondPlaceHand = secondPlacePlayer.getHand();
+        if ((winningPlayer.getRankValue() === secondPlacePlayer.getRankValue()) &&
             (winningPlayer.getSubRank() === secondPlacePlayer.getSubRank())){
-            results = "Tie"
-        } else {
-            results =   winningPlayer.getName() + " wins - " + winningHand.getShowdownResults(secondPlaceHand);
+            results = 'Tie';
+        }
+        else {
+            results =   winningPlayer.getName() + ' wins - ' + winningHand.getShowdownResults(secondPlaceHand);
         }
         return results;
     };
 };
+
