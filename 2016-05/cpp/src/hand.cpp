@@ -3,11 +3,20 @@
 //
 
 #include <vector>
-#include "card_t.h"
-#include "hand_t.h"
+#include "card.h"
+#include "hand.h"
 
+namespace agnostech {
+namespace poker {
 
-hand_t::hand_t(const std::vector<card_t> &cards): cards_(cards) {
+std::unordered_map<hand_t::rank_t, std::string> hand_t::rank_strings_ {{rank_t::high_card, "high card"}, 
+    {rank_t::pair, "pair"}, {rank_t::two_pair, "two pair"}, {rank_t::three_of_a_kind, "three of a kind"}, 
+    {rank_t::straight, "straight"}, {rank_t::flush, "flush"}, {rank_t::full_house, "full house"}, 
+    {rank_t::four_of_a_kind, "four of a kind"}, {rank_t::straight_flush, "straight flush"}};
+
+hand_t::hand_t() { }
+
+hand_t::hand_t(const std::vector<card_t>& cards): cards_(cards) {
     std::sort(cards_.begin(), cards_.end(), card_t::less_than_by_value);
     find_duplicates();
     rank_ = determine_rank();
@@ -15,6 +24,14 @@ hand_t::hand_t(const std::vector<card_t> &cards): cards_(cards) {
 
 const card_t &hand_t::get_high_card() const{
     return cards_.back();
+}
+
+hand_t::rank_t hand_t::get_rank() const {
+    return rank_;
+}
+
+std::string hand_t::get_rank_str() const {
+    return rank_strings_.find(rank_)->second;
 }
 
 void hand_t::find_duplicates() {
@@ -71,24 +88,7 @@ bool hand_t::find_if_straight() const {
     return is_straight;
 }
 
-const std::vector<int> &hand_t::get_four_of_a_kinds() const {
-    return four_of_a_kinds_;
-}
-
-const std::vector<int> &hand_t::get_three_of_a_kinds() const {
-    return three_of_a_kinds_;
-}
-
-const std::vector<int> &hand_t::get_two_of_a_kinds() const {
-    return two_of_a_kinds_;
-}
-
-const std::vector<card_t> &hand_t::get_cards() const {
-    return cards_;
-}
-
-
-int hand_t::compare_highest_cards(const std::vector<int> a, const std::vector<int> b) {
+int hand_t::compare_highest_cards(const std::vector<int>& a, const std::vector<int>& b) {
     for(unsigned int i = 0; i < a.size(); ++i) {
         int index = a.size() - 1 - i;
         if(a[index] > b[index]) {
@@ -167,3 +167,6 @@ hand_t::rank_t hand_t::determine_rank() const {
     }
     return rank;
 }
+
+} // poker namespace
+} // agnostech namespace

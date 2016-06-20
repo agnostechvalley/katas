@@ -3,6 +3,10 @@ project(poker)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Werror -Wall -Wextra")
 
-set(SOURCE_FILES src/main.cpp src/card_t.h src/hand_t.h src/hand_t.cpp)
+set(SOURCE_FILES    src/main.cpp 
+                    src/card.h 
+                    src/card.cpp
+                    src/hand.h 
+                    src/hand.cpp)
 add_executable(poker ${SOURCE_FILES})
 
