@@ -1,6 +1,6 @@
 # ZeroMQ Rock/Paper/Scissors
 
-In honor of http://hintjens.com let's use [ZeroMQ](http://zeromq.o) to pit our machines against each other in simple socket-based rock/paper/scissors aka (RPS) games.
+In honor of http://hintjens.com let's use [ZeroMQ](http://zeromq.org) to pit our machines against each other in simple socket-based rock/paper/scissors aka (RPS) games.
 
 ## Rules
 
