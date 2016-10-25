@@ -2,6 +2,10 @@
 
 In honor of http://hintjens.com let's use [ZeroMQ](http://zeromq.org) to pit our machines against each other in simple socket-based rock/paper/scissors aka (RPS) games.
 
+## Current Implementations
+
+- https://github.com/blainsmith/zeromq-rock-paper-scissors/ (Go and Julia)
+
 ## Rules
 
 Provide a SERVER and CLIENT implementation using any language you choose, but it must implement the [ZeroMQ PAIR socket](http://api.zeromq.org/2-1:zmq-socket#toc14) to limit only 1 connection at a time (this will help understand both ends).
