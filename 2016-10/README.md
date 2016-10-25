@@ -5,6 +5,7 @@ In honor of http://hintjens.com let's use [ZeroMQ](http://zeromq.org) to pit our
 ## Current Implementations
 
 - https://github.com/blainsmith/zeromq-rock-paper-scissors/ (Go and Julia)
+- https://github.com/brkattk/zmq-rock-paper-scissors/ (Node.js)
 
 ## Rules
 
